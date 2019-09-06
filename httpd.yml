@@ -1,6 +1,7 @@
 ---
  - name: "httpd"
    hosts: all
+   gather_facts: false
    tasks:
    - name: yum install httpd
      yum:
