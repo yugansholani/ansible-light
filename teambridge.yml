@@ -1,0 +1,26 @@
+---
+ - hosts: localhost
+   gather_facts: false
+   tasks:
+   - name: nmcli
+     nmcli:
+      state: present
+      conn_name: team0
+      ifname: team0
+      type: team
+      ip4: "172.25.1.11"
+      mode: active-backup
+   - name: slave1
+     nmcli:
+      state: present
+      conn_name: team0-slave1
+      ifname: eno1
+      type: team-slave
+      master: team0
+   - name: slave2
+     nmcli:
+      state: present
+      conn_name: team0-slave2
+      ifname: eno2
+      type: team-slave
+      master: team0
