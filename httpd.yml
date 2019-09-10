@@ -1,13 +1,47 @@
 ---
- - name: "httpd"
-   hosts: all
-   gather_facts: false
-   tasks:
-   - name: yum install httpd
-     yum:
+- hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: yum install httpd
+    yum:
       name: httpd
       state: latest
-   - name: systemctl start httpd
-     service: 
+  - name: systemctl start httpd
+    service:
       name: httpd
       state: started
+      enabled: yes
+  - name: index.html file
+    file:
+      path: "/var/www/html/index.html"
+      state: touch
+      mode: 0755
+  - name: Content  
+    copy:
+      dest: "/var/www/html/index.html"
+      content: |
+        <html>
+        <h1>
+        FIRST ANSIBLE PAGE USING SIMPLE HTTP
+        </h1>
+        </html>
+  - name: Conf file
+    file:
+      path: "/etc/httpd/conf.d/new.conf"
+      state: touch
+      mode: 0755
+  - name: Content  
+    copy:
+      dest: "/etc/httpd/conf.d/new.conf"
+      content: |
+        <VirtualHost    *:80>
+        ServerName      server1.example.com
+        ServerAdmin     root@localhost
+        DocumentRoot    /var/www/html
+        </VirtualHost>
+  - name: firewall-cmd --permanent --add-service=httpd
+    firewalld:
+      service: http
+      permanent: yes
+      immediate: yes
+      state: enabled
